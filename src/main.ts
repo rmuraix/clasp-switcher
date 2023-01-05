@@ -1,5 +1,15 @@
-const addAccount = () => {
-    console.log("add");
+import * as fs from 'fs'
+import * as path from 'path'
+
+const getHomeDir = () => {
+    return process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"];
+}
+
+const addAccount = (name: string) => {
+    const home = getHomeDir() || "";
+    const clasprc = path.join(home, ".clasprc.json");
+    const file = fs.readFileSync(clasprc, "utf-8");
+    console.log(file);
 }
 
 const deleteAccount = (name: string) => {
@@ -11,7 +21,7 @@ const switchAccount = (name: string) => {
 }
 
 const help = () => {
-    let text:string = "\x1b[1mCOMMANDS:\x1b[0m\n";
+    let text: string = "\x1b[1mCOMMANDS:\x1b[0m\n";
 
     text += "  Add current account to switch target.\n";
     text += "\x1b[34m    \"add <name>\"\x1b[0m or \x1b[34m\"-a <name>\"\x1b[0m\n";
@@ -37,7 +47,7 @@ const main = (argument: string) => {
     switch (argument) {
         case "add":
         case "-a":
-            addAccount();
+            addAccount(process.argv[3]);
             break;
         case "delete":
         case "-d":
