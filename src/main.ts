@@ -7,9 +7,26 @@ const getHomeDir = () => {
 
 const addAccount = (name: string) => {
     const home = getHomeDir() || "";
-    const clasprc = path.join(home, ".clasprc.json");
-    const file = fs.readFileSync(clasprc, "utf-8");
-    console.log(file);
+    const clasprcPath = path.join(home, ".clasprc.json")
+
+    // If the file exists, get its contents.
+    let file = "";
+    if (fs.existsSync(clasprcPath)) {
+        file = fs.readFileSync(clasprcPath, "utf-8");
+    }else{
+        console.log(".clasprc.json does not exist. Are you not logged in to clasp?");
+        process.exit(1);
+    }
+
+    const listPath = path.resolve(__dirname, "../.list");
+    // If the directory does not exist, create it.
+    if (!fs.existsSync(listPath)) {
+        fs.mkdirSync(listPath);
+    }
+    // Copy the contents of the file to ../.list/<name>
+    fs.writeFileSync(path.join(listPath, name), file);
+
+    console.log("Current account added as switch target.");
 }
 
 const deleteAccount = (name: string) => {
