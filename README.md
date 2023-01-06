@@ -19,6 +19,9 @@ COMMANDS:
   Switching to <name>.
     "switch <name>" or "-s <name>"
 
+  List targets
+    "list" or "-l"
+
   Print this message.
     "help" or "-h"
 ```
