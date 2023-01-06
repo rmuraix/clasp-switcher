@@ -13,7 +13,7 @@ const addAccount = (name: string) => {
     let file = "";
     if (fs.existsSync(clasprcPath)) {
         file = fs.readFileSync(clasprcPath, "utf-8");
-    }else{
+    } else {
         console.log(".clasprc.json does not exist. Are you not logged in to clasp?");
         process.exit(1);
     }
@@ -36,7 +36,7 @@ const deleteAccount = (name: string) => {
     // Delete
     if (fs.existsSync(deleteTarget)) {
         fs.unlinkSync(deleteTarget);
-    }else{
+    } else {
         console.log("No such name exists for the switch target.");
         process.exit(1);
     }
@@ -55,13 +55,28 @@ const switchAccount = (name: string) => {
     let file = "";
     if (fs.existsSync(listFilePath)) {
         file = fs.readFileSync(listFilePath, "utf-8");
-    }else{
+    } else {
         console.log("No such name exists for the switch target.");
         process.exit(1);
     }
     // Copy the contents of the file to /.clasprc.json
     fs.writeFileSync(clasprcPath, file);
     console.log("Switched to " + name);
+}
+
+const showList = () => {
+    const listPath = path.resolve(__dirname, "../.list");
+
+    if (!fs.existsSync(listPath)) {
+        console.log("Switch target does not exist");
+        process.exit(1);
+    }
+
+    fs.readdir(listPath, (err, files) => {
+        files.forEach(file => {
+            console.log(file);
+        });
+    });
 }
 
 const help = () => {
@@ -77,6 +92,9 @@ const help = () => {
 
     text += "  Switching to <name>.\n";
     text += "\x1b[34m    \"switch <name>\"\x1b[0m or \x1b[34m\"-s <name>\"\x1b[0m\n\n";
+
+    text += "  List targets\n";
+    text += "\x1b[34m    \"list\"\x1b[0m or \x1b[34m\"-l\"\x1b[0m\n\n";
 
     text += "  Print this message.\n";
     text += "\x1b[34m    \"help\"\x1b[0m or \x1b[34m\"-h\"\x1b[0m\n\n";
@@ -100,6 +118,10 @@ const main = (argument: string) => {
         case "switch":
         case "-s":
             switchAccount(process.argv[3]);
+            break;
+        case "list":
+        case "-l":
+            showList();
             break;
         case "help":
         case "-h":
