@@ -7,9 +7,10 @@ If you find a problem, first check to see if similar problems have already been 
 However, **DO NOT** create an issue if it is a vulnerability report. How to report vulnerabilities: [Security Vulnerabilities](https://github.com/rmuraix/.github/blob/main/.github/SECURITY.md)  
 ## Make Changes
 ### Setup
-- 
+- `npm install`  
 ### Build
-- 
+- `tsc`  
+
 Once your changes are ready, don't forget to self-review to speed up the review process!  
 ## Submitting a Pull Request
 Pull requests are great. Here's a quick guide:
@@ -17,7 +18,7 @@ Pull requests are great. Here's a quick guide:
 1. Fork the repo on github.  
 2. Make a new branch.  
 3. Test your code and commits changes.
-4. Push to your fork and submit a pull request against `Develop`  
+4. Push to your fork and submit a pull request to `main`  
 5. Wait for review.  
 
 Suggestions for improvements or alternative ideas may happen.  
