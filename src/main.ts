@@ -30,7 +30,18 @@ const addAccount = (name: string) => {
 }
 
 const deleteAccount = (name: string) => {
-    console.log(name);
+    const listPath = path.resolve(__dirname, "../.list");
+    const deleteTarget = path.join(listPath, name);
+
+    // Delete
+    if (fs.existsSync(deleteTarget)) {
+        fs.unlinkSync(deleteTarget);
+    }else{
+        console.log("No such name exists for the switch target.");
+        process.exit(1);
+    }
+
+    console.log(name + "removed from switch target.");
 }
 
 const switchAccount = (name: string) => {
