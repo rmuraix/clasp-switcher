@@ -7,7 +7,7 @@ const getHomeDir = () => {
 
 const addAccount = (name: string) => {
     const home = getHomeDir() || "";
-    const clasprcPath = path.join(home, ".clasprc.json")
+    const clasprcPath = path.join(home, ".clasprc.json");
 
     // If the file exists, get its contents.
     let file = "";
@@ -34,7 +34,23 @@ const deleteAccount = (name: string) => {
 }
 
 const switchAccount = (name: string) => {
-    console.log(name);
+    const home = getHomeDir() || "";
+    const listPath = path.resolve(__dirname, "../.list");
+
+    const clasprcPath = path.join(home, ".clasprc.json");
+    const listFilePath = path.join(listPath, name);
+
+    // If the file exists, get its contents.
+    let file = "";
+    if (fs.existsSync(listFilePath)) {
+        file = fs.readFileSync(listFilePath, "utf-8");
+    }else{
+        console.log("No such name exists for the switch target.");
+        process.exit(1);
+    }
+    // Copy the contents of the file to /.clasprc.json
+    fs.writeFileSync(clasprcPath, file);
+    console.log("Switched to " + name);
 }
 
 const help = () => {
