@@ -5,8 +5,7 @@ const getHomeDir = () => {
     return process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"];
 }
 
-const addAccount = (name: string) => {
-    const home = getHomeDir() || "";
+const addAccount = (home: string, name: string) => {
     const clasprcPath = path.join(home, ".clasprc.json");
 
     // If the file exists, get its contents.
@@ -44,8 +43,7 @@ const deleteAccount = (name: string) => {
     console.log(name + "removed from switch target.");
 }
 
-const switchAccount = (name: string) => {
-    const home = getHomeDir() || "";
+const switchAccount = (home: string, name: string) => {
     const listPath = path.resolve(__dirname, "../.list");
 
     const clasprcPath = path.join(home, ".clasprc.json");
@@ -106,10 +104,11 @@ const help = () => {
 }
 
 const main = (argument: string) => {
+    const home = getHomeDir() || "";
     switch (argument) {
         case "add":
         case "-a":
-            addAccount(process.argv[3]);
+            addAccount(home, process.argv[3]);
             break;
         case "delete":
         case "-d":
@@ -117,7 +116,7 @@ const main = (argument: string) => {
             break;
         case "switch":
         case "-s":
-            switchAccount(process.argv[3]);
+            switchAccount(home, process.argv[3]);
             break;
         case "list":
         case "-l":
