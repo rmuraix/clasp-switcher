@@ -65,9 +65,7 @@ export const switchAccount = (home: string, name: string): number => {
     return 0;
 }
 
-export const showList = (): number => {
-    const listPath = path.resolve(__dirname, "../.list");
-
+export const showList = (listPath:string) => {
     if (!fs.existsSync(listPath)) {
         console.log("Switch target does not exist");
         return 1;
@@ -108,25 +106,26 @@ export const help = () => {
     return 0;
 }
 
-export const main = (argument: string) => {
+export const main = (arg2: string, arg3:string):number => {
     let returnValue: number;
     const home = getHomeDir() || "";
-    switch (argument) {
+    switch (arg2) {
         case "add":
         case "-a":
-            returnValue = addAccount(home, process.argv[3]);
+            returnValue = addAccount(home, arg3);
             break;
         case "delete":
         case "-d":
-            returnValue = deleteAccount(process.argv[3]);
+            returnValue = deleteAccount(arg3);
             break;
         case "switch":
         case "-s":
-            returnValue = switchAccount(home, process.argv[3]);
+            returnValue = switchAccount(home, arg3);
             break;
         case "list":
         case "-l":
-            returnValue = showList();
+            returnValue = showList(path.resolve(__dirname, "../.list"));
+            
             break;
         case "help":
         case "-h":
@@ -137,5 +136,5 @@ export const main = (argument: string) => {
             returnValue = 1;
             break;
     }
-    process.exit(returnValue);
+    return returnValue;
 }
