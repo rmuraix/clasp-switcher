@@ -5,8 +5,7 @@ const getHomeDir = () => {
     return process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"];
 }
 
-const addAccount = (name: string) => {
-    const home = getHomeDir() || "";
+export const addAccount = (home: string, name: string): number => {
     const clasprcPath = path.join(home, ".clasprc.json");
 
     // If the file exists, get its contents.
@@ -15,7 +14,7 @@ const addAccount = (name: string) => {
         file = fs.readFileSync(clasprcPath, "utf-8");
     } else {
         console.log(".clasprc.json does not exist. Are you not logged in to clasp?");
-        process.exit(1);
+        return 1;
     }
 
     const listPath = path.resolve(__dirname, "../.list");
@@ -27,9 +26,10 @@ const addAccount = (name: string) => {
     fs.writeFileSync(path.join(listPath, name), file);
 
     console.log("Current account added as switch target.");
+    return 0;
 }
 
-const deleteAccount = (name: string) => {
+export const deleteAccount = (name: string): number => {
     const listPath = path.resolve(__dirname, "../.list");
     const deleteTarget = path.join(listPath, name);
 
@@ -38,14 +38,14 @@ const deleteAccount = (name: string) => {
         fs.unlinkSync(deleteTarget);
     } else {
         console.log("No such name exists for the switch target.");
-        process.exit(1);
+        return 1;
     }
 
     console.log(name + "removed from switch target.");
+    return 0;
 }
 
-const switchAccount = (name: string) => {
-    const home = getHomeDir() || "";
+export const switchAccount = (home: string, name: string): number => {
     const listPath = path.resolve(__dirname, "../.list");
 
     const clasprcPath = path.join(home, ".clasprc.json");
@@ -57,19 +57,18 @@ const switchAccount = (name: string) => {
         file = fs.readFileSync(listFilePath, "utf-8");
     } else {
         console.log("No such name exists for the switch target.");
-        process.exit(1);
+        return 1;
     }
     // Copy the contents of the file to /.clasprc.json
     fs.writeFileSync(clasprcPath, file);
     console.log("Switched to " + name);
+    return 0;
 }
 
-const showList = () => {
-    const listPath = path.resolve(__dirname, "../.list");
-
+export const showList = (listPath:string) => {
     if (!fs.existsSync(listPath)) {
         console.log("Switch target does not exist");
-        process.exit(1);
+        return 1;
     }
 
     fs.readdir(listPath, (err, files) => {
@@ -77,9 +76,10 @@ const showList = () => {
             console.log(file);
         });
     });
+    return 0;
 }
 
-const help = () => {
+export const help = () => {
     let text: string = "\x1b[1mCOMMANDS:\x1b[0m\n";
 
     text += "  Add current account to switch target.\n";
@@ -103,35 +103,38 @@ const help = () => {
     text += "  https://github.com/rmuraix/clasp-switcher"
 
     console.log(text);
+    return 0;
 }
 
-const main = (argument: string) => {
-    switch (argument) {
+export const main = (arg2: string, arg3:string):number => {
+    let returnValue: number;
+    const home = getHomeDir() || "";
+    switch (arg2) {
         case "add":
         case "-a":
-            addAccount(process.argv[3]);
+            returnValue = addAccount(home, arg3);
             break;
         case "delete":
         case "-d":
-            deleteAccount(process.argv[3]);
+            returnValue = deleteAccount(arg3);
             break;
         case "switch":
         case "-s":
-            switchAccount(process.argv[3]);
+            returnValue = switchAccount(home, arg3);
             break;
         case "list":
         case "-l":
-            showList();
+            returnValue = showList(path.resolve(__dirname, "../.list"));
+            
             break;
         case "help":
         case "-h":
-            help();
+            returnValue = help();
             break;
         default:
             console.log("Invalid argument.\"help\" to see how to use it.")
+            returnValue = 1;
             break;
     }
+    return returnValue;
 }
-
-const argument: string = process.argv[2];
-main(argument);
